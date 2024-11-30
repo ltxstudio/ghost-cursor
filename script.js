@@ -6,61 +6,71 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// Set some constants for colors and the astronaut effect
-const neonBlue = "rgb(0, 255, 255)";
-const neonPink = "rgb(255, 20, 147)";
-const glowEffect = 10;  // The intensity of the glow effect
+// Load astronaut image
+const astronautImage = new Image();
+astronautImage.src = "4286dcad-ca1f-4317-9076-523e1f0e3ac9.webp";  // Make sure to place your astronaut image here
 
-// Function to create a glowing astronaut
-function drawAstronaut(x, y) {
-    // Glowing effect for the helmet
+// Lighting and reflections parameters
+const glowEffect = 30;  // Intensity of the glow
+const neonBlue = "rgb(0, 255, 255)";  // Neon blue glow color
+const neonPink = "rgb(255, 20, 147)"; // Neon pink for reflection highlights
+
+// Astronaut position and movement variables
+let astronautX = canvas.width / 2;
+let astronautY = canvas.height / 2;
+let rotationAngle = 0;
+
+// Function to apply glowing effect around the astronaut
+function applyLightingEffect(x, y) {
     ctx.shadowBlur = glowEffect;
     ctx.shadowColor = neonBlue;
-    
-    // Draw astronaut's helmet (a simple circle for now)
+
+    // Draw the glowing helmet area (optional, can be improved later)
     ctx.beginPath();
-    ctx.arc(x, y, 50, 0, Math.PI * 2);
+    ctx.arc(x, y, 60, 0, Math.PI * 2);  // Glowing effect for the helmet
     ctx.fillStyle = neonBlue;
     ctx.fill();
-    
-    // Glowing effect for the suit
-    ctx.shadowBlur = glowEffect / 2;
+}
+
+// Function to animate astronaut with glowing effects and floating movement
+function animateAstronaut() {
+    // Clear canvas for the next frame
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Apply lighting effect
+    applyLightingEffect(astronautX, astronautY);
+
+    // Draw astronaut image
+    ctx.save();  // Save the current state of the canvas
+    ctx.translate(astronautX, astronautY);  // Move the origin to astronaut position
+    ctx.rotate(rotationAngle);  // Apply rotation for a 3D-like effect
+    ctx.drawImage(astronautImage, -60, -120, 120, 240);  // Draw the astronaut
+    ctx.restore();  // Restore the canvas to its original state
+
+    // Animate astronaut floating up and down
+    astronautY += Math.sin(Date.now() / 1000) * 2;  // Floating effect using sine function
+
+    // Create subtle reflections with shadow effect
+    ctx.shadowBlur = 15;
     ctx.shadowColor = neonPink;
-    
-    // Draw the astronaut's body (rectangle)
-    ctx.beginPath();
-    ctx.rect(x - 25, y + 60, 50, 100);
     ctx.fillStyle = neonPink;
+    ctx.beginPath();
+    ctx.arc(astronautX, astronautY + 150, 20, 0, Math.PI * 2);  // Reflecting on the ground
     ctx.fill();
-    
-    // Reset shadow effect for other elements
-    ctx.shadowBlur = 0;
-    ctx.shadowColor = "transparent";
+
+    // Rotate astronaut for dynamic movement
+    rotationAngle += 0.01;  // Adjust the speed of rotation
+
+    // Call the next animation frame
+    requestAnimationFrame(animateAstronaut);
 }
 
-// Animate the astronaut's movement and glowing effect
-let angle = 0; // For rotation effect
+// Wait for the astronaut image to load, then start the animation
+astronautImage.onload = () => {
+    animateAstronaut();
+};
 
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas
-    
-    // Calculate the astronaut's position based on mouse movements (optional)
-    let x = canvas.width / 2 + Math.sin(angle) * 150;
-    let y = canvas.height / 2 + Math.cos(angle) * 150;
-    
-    // Draw astronaut
-    drawAstronaut(x, y);
-    
-    angle += 0.02;  // Control the speed of rotation
-    
-    // Call the animate function again for the next frame
-    requestAnimationFrame(animate);
-}
-
-// Start the animation
-animate();
-
-// Make canvas size responsive to window resizing
+// Resize canvas on window resize
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
