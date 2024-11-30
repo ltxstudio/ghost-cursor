@@ -1,0 +1,65 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+    user-select: none;
+}
+
+body {
+    height: 100vh;
+    background: #222;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: none; /* Hide the default cursor */
+    perspective: 1000px; /* Add perspective to give the scene a 3D look */
+}
+
+/* Ghost Cursor Styling */
+.ghost-cursor {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg);
+    animation: pulse 1.5s ease-in-out infinite;
+    transition: transform 0.1s ease, opacity 0.1s ease;
+    z-index: 9999;
+}
+
+/* Animation for the pulse effect */
+@keyframes pulse {
+    0% {
+        transform: scale(1) rotateX(0deg) rotateY(0deg);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.5) rotateX(10deg) rotateY(10deg);
+        opacity: 0.3;
+    }
+    100% {
+        transform: scale(1) rotateX(0deg) rotateY(0deg);
+        opacity: 0.6;
+    }
+}
+
+/* Interaction Effects */
+body {
+    transform-style: preserve-3d; /* Enable 3D transformations for all elements */
+}
+
+/* Hovered Button or Link Effect (optional, for future interactive elements) */
+button, a {
+    cursor: none; /* Hide default cursor */
+    position: relative;
+}
+
+button:hover, a:hover {
+    color: #61dafb;
+    transition: color 0.3s ease;
+}
